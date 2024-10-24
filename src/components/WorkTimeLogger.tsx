@@ -24,6 +24,7 @@ const WorkTimeLogger: React.FC = () => {
     [key: string]: number;
   }>({});
   const [isLoaded, setIsLoaded] = useState(false);
+  const [currentTask, setCurrentTask] = useState<Task | null>(null);
 
   useEffect(() => {
     if (!isLoaded) {
@@ -36,6 +37,7 @@ const WorkTimeLogger: React.FC = () => {
             setWorkStartTime(parsedData.workStartTime || null);
             setWorkEndTime(parsedData.workEndTime || null);
             setTasks(Array.isArray(parsedData.tasks) ? parsedData.tasks : []);
+            setCurrentTask(parsedData.currentTask || null);
             setTaskStatistics(parsedData.taskStatistics || {});
           } else {
             console.error("Invalid data structure in localStorage");
@@ -102,6 +104,12 @@ const WorkTimeLogger: React.FC = () => {
           endTime: null,
         },
       ];
+    });
+    setCurrentTask({
+      id: now.toString(),
+      name: taskName,
+      startTime: now,
+      endTime: null,
     });
   };
 
@@ -183,8 +191,11 @@ const WorkTimeLogger: React.FC = () => {
                 !workStartTime || workEndTime
                   ? "opacity-50 cursor-not-allowed"
                   : ""
+              } ${
+                taskName === currentTask?.name
+                  ? "bg-green-700 cursor-not-allowed"
+                  : ""
               }`}
-              disabled={!workStartTime || !!workEndTime}
             >
               Start {taskName}
             </button>
