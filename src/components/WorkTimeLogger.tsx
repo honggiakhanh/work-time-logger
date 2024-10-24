@@ -70,6 +70,12 @@ const WorkTimeLogger: React.FC = () => {
         endTime: null,
       },
     ]);
+    setCurrentTask({
+      id: now.toString(),
+      name: "Stickering",
+      startTime: now,
+      endTime: null,
+    });
   };
 
   const endWorkDay = () => {
@@ -84,6 +90,7 @@ const WorkTimeLogger: React.FC = () => {
           task.endTime === null ? { ...task, endTime: now } : task
         )
       );
+      setCurrentTask(null);
       const statistics = calculateTaskStatistics();
       setTaskStatistics(statistics);
     }
@@ -187,15 +194,18 @@ const WorkTimeLogger: React.FC = () => {
             <button
               key={taskName}
               onClick={() => startTask(taskName)}
-              className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ${
-                !workStartTime || workEndTime
+              disabled={
+                !workStartTime ||
+                !!workEndTime ||
+                taskName === currentTask?.name
+              }
+              className={`bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded 
+              ${
+                !workStartTime || workEndTime || taskName === currentTask?.name
                   ? "opacity-50 cursor-not-allowed"
                   : ""
-              } ${
-                taskName === currentTask?.name
-                  ? "bg-green-700 cursor-not-allowed"
-                  : ""
-              }`}
+              } 
+              ${taskName === currentTask?.name ? "opacity-50" : ""}`}
             >
               Start {taskName}
             </button>
