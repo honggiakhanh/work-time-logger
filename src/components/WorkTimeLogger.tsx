@@ -79,12 +79,6 @@ const WorkTimeLogger: React.FC = () => {
           task.endTime === null ? { ...task, endTime: now } : task
         )
       );
-      // Immediately reset for a new work day
-      setTimeout(() => {
-        setWorkStartTime(null);
-        setWorkEndTime(null);
-        setTasks([]);
-      }, 0);
     }
   };
 
@@ -119,6 +113,8 @@ const WorkTimeLogger: React.FC = () => {
     return `${hours}h ${minutes}m ${seconds}s`;
   };
 
+  const sortedTasks = [...tasks].sort((a, b) => b.startTime - a.startTime);
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Work Time Logger</h1>
@@ -131,15 +127,14 @@ const WorkTimeLogger: React.FC = () => {
           {workStartTime &&
             formatDuration(workStartTime, workEndTime || Date.now())}
         </p>
-        {!workStartTime && (
+        {!workStartTime || workEndTime ? ( // Show button if no start time or work has ended
           <button
             onClick={startWorkDay}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Start Work Day
           </button>
-        )}
-        {workStartTime && !workEndTime && (
+        ) : (
           <button
             onClick={endWorkDay}
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
@@ -168,7 +163,7 @@ const WorkTimeLogger: React.FC = () => {
         </div>
         <div className="mt-6">
           <h3 className="text-xl font-semibold mb-2">Task List</h3>
-          {tasks.map((task) => (
+          {sortedTasks.map((task) => (
             <div key={task.id} className="mb-2 p-2 bg-gray-100 rounded">
               <span className="font-semibold">{task.name}</span>
               <span className="ml-2">
