@@ -9,8 +9,7 @@ interface Task {
 
 const predefinedTasks = [
   "Stickering",
-  "Preparing pallete",
-  "Handling finished pallete",
+  "Handling pallete",
   "Trash",
   "Lunch",
   "Coffee Break",
@@ -21,6 +20,9 @@ const WorkTimeLogger: React.FC = () => {
   const [workStartTime, setWorkStartTime] = useState<number | null>(null);
   const [workEndTime, setWorkEndTime] = useState<number | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [taskStatistics, setTaskStatistics] = useState<{
+    [key: string]: number;
+  }>({});
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -34,6 +36,7 @@ const WorkTimeLogger: React.FC = () => {
             setWorkStartTime(parsedData.workStartTime || null);
             setWorkEndTime(parsedData.workEndTime || null);
             setTasks(Array.isArray(parsedData.tasks) ? parsedData.tasks : []);
+            setTaskStatistics(parsedData.taskStatistics || {});
           } else {
             console.error("Invalid data structure in localStorage");
           }
@@ -51,7 +54,7 @@ const WorkTimeLogger: React.FC = () => {
       const dataToSave = { workStartTime, workEndTime, tasks };
       localStorage.setItem("workTimeLoggerData", JSON.stringify(dataToSave));
     }
-  }, [isLoaded, workStartTime, workEndTime, tasks]);
+  }, [isLoaded, workStartTime, workEndTime, tasks, taskStatistics]);
 
   const startWorkDay = () => {
     const now = Date.now();
@@ -79,6 +82,8 @@ const WorkTimeLogger: React.FC = () => {
           task.endTime === null ? { ...task, endTime: now } : task
         )
       );
+      const statistics = calculateTaskStatistics();
+      setTaskStatistics(statistics);
     }
   };
 
@@ -115,6 +120,19 @@ const WorkTimeLogger: React.FC = () => {
 
   const sortedTasks = [...tasks].sort((a, b) => b.startTime - a.startTime);
 
+  const calculateTaskStatistics = () => {
+    const statistics: { [key: string]: number } = {};
+    tasks.forEach((task) => {
+      const duration = (task.endTime || Date.now()) - task.startTime;
+      if (statistics[task.name]) {
+        statistics[task.name] += duration;
+      } else {
+        statistics[task.name] = duration;
+      }
+    });
+    return statistics;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Work Time Logger</h1>
@@ -143,7 +161,18 @@ const WorkTimeLogger: React.FC = () => {
           </button>
         )}
       </div>
-      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8">
+      {workEndTime && Object.keys(taskStatistics).length > 0 && (
+        <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+          <h2 className="text-2xl font-semibold mb-4">Work Day Statistics</h2>
+          {Object.entries(taskStatistics).map(([taskName, duration]) => (
+            <div key={taskName} className="mb-2">
+              <span className="font-semibold">{taskName}:</span>{" "}
+              {formatDuration(0, duration)}
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h2 className="text-2xl font-semibold mb-4">Tasks</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {predefinedTasks.map((taskName) => (
