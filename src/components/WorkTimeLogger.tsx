@@ -8,12 +8,12 @@ interface Task {
 }
 
 const predefinedTasks = [
-  "Stickering",
-  "Handling pallete",
-  "Trash",
-  "Lunch",
-  "Coffee Break",
-  "Other",
+  "Dán tem",
+  "Xử lí pallete",
+  "Đổ rác",
+  "Nghỉ trưa",
+  "Cà phê",
+  "Việc khác",
 ];
 
 const WorkTimeLogger: React.FC = () => {
@@ -80,7 +80,7 @@ const WorkTimeLogger: React.FC = () => {
 
   const endWorkDay = () => {
     const confirmEnd = window.confirm(
-      "Are you sure you want to end the work day?"
+      "Bạn có chắc chắn muốn kết thúc ngày làm việc?"
     );
     if (confirmEnd) {
       const now = Date.now();
@@ -153,10 +153,10 @@ const WorkTimeLogger: React.FC = () => {
       <h1 className="text-3xl font-bold mb-6">Work Time Logger</h1>
       <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h2 className="text-2xl font-semibold mb-4">Work Day</h2>
-        <p className="mb-2">Start Time: {formatTime(workStartTime)}</p>
-        <p className="mb-2">End Time: {formatTime(workEndTime)}</p>
+        <p className="mb-2">Giờ bắt đầu: {formatTime(workStartTime)}</p>
+        <p className="mb-2">Giờ kết thúc: {formatTime(workEndTime)}</p>
         <p className="mb-4">
-          Duration:{" "}
+          Thời gian làm việc:{" "}
           {workStartTime &&
             formatDuration(workStartTime, workEndTime || Date.now())}
         </p>
@@ -165,14 +165,14 @@ const WorkTimeLogger: React.FC = () => {
             onClick={startWorkDay}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            Start Work Day
+            Bắt đầu ngày làm việc
           </button>
         ) : (
           <button
             onClick={endWorkDay}
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
           >
-            End Work Day
+            Kết thúc ngày làm việc
           </button>
         )}
       </div>
@@ -207,7 +207,7 @@ const WorkTimeLogger: React.FC = () => {
               } 
               ${taskName === currentTask?.name ? "opacity-50" : ""}`}
             >
-              Start {taskName}
+              {taskName}
             </button>
           ))}
         </div>
