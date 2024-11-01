@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { formatTime, formatDuration, predefinedTasks } from "../utils/utils";
+import WorkDayInfo from "./WorkDayInfo";
+import PalleteEntryForm from "./PalleteEntryForm";
 
 interface Task {
   id: string;
@@ -6,15 +9,6 @@ interface Task {
   startTime: number;
   endTime: number | null;
 }
-
-const predefinedTasks = [
-  "Dán tem",
-  "Xử lí pallete",
-  "Đổ rác",
-  "Nghỉ trưa",
-  "Cà phê",
-  "Việc khác",
-];
 
 const WorkTimeLogger: React.FC = () => {
   const [workStartTime, setWorkStartTime] = useState<number | null>(null);
@@ -120,19 +114,6 @@ const WorkTimeLogger: React.FC = () => {
     });
   };
 
-  const formatTime = (timestamp: number | null) => {
-    if (!timestamp) return "Not set";
-    return new Date(timestamp).toLocaleTimeString();
-  };
-
-  const formatDuration = (start: number, end: number | null) => {
-    const duration = Math.floor(((end || Date.now()) - start) / 1000);
-    const hours = Math.floor(duration / 3600);
-    const minutes = Math.floor((duration % 3600) / 60);
-    const seconds = duration % 60;
-    return `${hours}h ${minutes}m ${seconds}s`;
-  };
-
   const sortedTasks = [...tasks].sort((a, b) => b.startTime - a.startTime);
 
   const calculateTaskStatistics = () => {
@@ -151,30 +132,14 @@ const WorkTimeLogger: React.FC = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">Work Time Logger</h1>
-      <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h2 className="text-2xl font-semibold mb-4">Work Day</h2>
-        <p className="mb-2">Giờ bắt đầu: {formatTime(workStartTime)}</p>
-        <p className="mb-2">Giờ kết thúc: {formatTime(workEndTime)}</p>
-        <p className="mb-4">
-          Thời gian làm việc:{" "}
-          {workStartTime &&
-            formatDuration(workStartTime, workEndTime || Date.now())}
-        </p>
-        {!workStartTime || workEndTime ? ( // Show button if no start time or work has ended
-          <button
-            onClick={startWorkDay}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Bắt đầu ngày làm việc
-          </button>
-        ) : (
-          <button
-            onClick={endWorkDay}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-          >
-            Kết thúc ngày làm việc
-          </button>
-        )}
+      <div className="grid grid-cols-2 gap-4">
+        <WorkDayInfo
+          workStartTime={workStartTime}
+          workEndTime={workEndTime}
+          startWorkDay={startWorkDay}
+          endWorkDay={endWorkDay}
+        />
+        <PalleteEntryForm />
       </div>
       {workEndTime && Object.keys(taskStatistics).length > 0 && (
         <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
