@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useWorkTime } from "../hooks/useWorkTime";
 import { taskService } from "../services/taskService";
 import WorkDayInfo from "./WorkDayInfo";
 import TaskList from "./TaskList";
 import TaskHistory from "./TaskHistory";
-import { formatDuration } from "../utils/utils";
 import { usePalleteEntries } from "../hooks/usePalleteEntries";
 import PalleteEntryForm from "./PalleteEntryForm";
 import PalleteList from "./PalleteList";
@@ -26,7 +25,8 @@ const WorkTimeLogger: React.FC = () => {
   } = useWorkTime();
 
   const [isPalleteFormOpen, setIsPalleteFormOpen] = useState(false);
-  const { palleteEntries, addPalleteEntry } = usePalleteEntries();
+  const { palleteEntries, addPalleteEntry, resetPalleteEntries } =
+    usePalleteEntries();
 
   const startWorkDay = () => {
     const now = Date.now();
@@ -35,6 +35,7 @@ const WorkTimeLogger: React.FC = () => {
     const initialTask = taskService.createTask("Stickering");
     setTasks([initialTask]);
     setCurrentTask(initialTask);
+    resetPalleteEntries();
   };
 
   const endWorkDay = () => {
@@ -60,6 +61,16 @@ const WorkTimeLogger: React.FC = () => {
     addPalleteEntry(entry);
     setIsPalleteFormOpen(false);
   };
+
+  const [, setUpdateTrigger] = useState(0);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setUpdateTrigger((prev) => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">

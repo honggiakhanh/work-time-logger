@@ -24,5 +24,9 @@ export const usePalleteEntries = () => {
     setPalleteEntries((prev) => [newEntry, ...prev]);
   };
 
-  return { palleteEntries, addPalleteEntry };
+  const resetPalleteEntries = () => {
+    setPalleteEntries([]);
+  };
+
+  return { palleteEntries, addPalleteEntry, resetPalleteEntries };
 };
