@@ -16,7 +16,17 @@ interface Props {
   onSubmit: (entry: Omit<PalleteEntry, "id" | "timestamp">) => void;
 }
 
-const goodTypes = ["Mesam3060", "Mesam3061", "Mesam3096", "Mesam3097", "other"];
+const goodTypes = [
+  "Mesam3060",
+  "Mesam3061",
+  "Mesam3096",
+  "Mesam3097",
+  "Mesam3117",
+  "Mesam3084",
+  "Mebc2534",
+  "Mebc2657",
+  "Mebc2658",
+];
 
 const PalleteEntryForm: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState<PalleteEntry>({
