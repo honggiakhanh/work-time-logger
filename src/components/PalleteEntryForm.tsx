@@ -61,7 +61,9 @@ const PalleteEntryForm: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
     setFormData((prev) => ({
       ...prev,
       [name]:
-        name === "lotCode" || name === "otherInfo" ? value : Number(value),
+        name === "slot" || name === "boxCount" || name === "itemsPerBox"
+          ? Number(value)
+          : value,
     }));
   };
 

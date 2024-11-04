@@ -16,6 +16,7 @@ export const usePalleteEntries = () => {
   }, [palleteEntries]);
 
   const addPalleteEntry = (entry: Omit<PalleteEntry, "id" | "timestamp">) => {
+    console.log(entry);
     const newEntry: PalleteEntry = {
       ...entry,
       id: Date.now().toString(),
