@@ -8,10 +8,14 @@ interface Props {
 }
 
 const PalleteList: React.FC<Props> = ({ entries, onAddPalleteClick }) => {
+  const totalPalletes = entries.reduce((sum, entry) => sum + entry.boxCount, 0);
   return (
     <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
       <div className="flex justify-between items-center pb-2">
-        <h2 className="text-2xl font-semibold">Pallete Entries</h2>
+        <div>
+          <h2 className="text-2xl font-semibold">Pallete Entries</h2>
+          <p className="text-gray-600 mt-1">Total Palletes: {entries.length}</p>
+        </div>
         <button
           onClick={onAddPalleteClick}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
