@@ -45,8 +45,8 @@ const PalleteEntryForm: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
       goodType: goodTypes[0],
       lotCode: "",
       slot: 0,
-      boxCount: 40,
-      itemsPerBox: 24,
+      boxCount: 24,
+      itemsPerBox: 40,
       otherInfo: "",
     });
     onClose();
