@@ -9,6 +9,7 @@ import PalleteEntryForm from "./PalleteEntryForm";
 import PalleteList from "./PalleteList";
 import { PalleteEntry } from "../types";
 import DayStatistic from "./DayStatistic";
+import { predefinedTasks } from "../utils/utils";
 
 const WorkTimeLogger: React.FC = () => {
   const {
@@ -32,7 +33,7 @@ const WorkTimeLogger: React.FC = () => {
     const now = Date.now();
     setWorkStartTime(now);
     setWorkEndTime(null);
-    const initialTask = taskService.createTask("Stickering");
+    const initialTask = taskService.createTask(predefinedTasks[0]);
     setTasks([initialTask]);
     setCurrentTask(initialTask);
     resetPalleteEntries();
@@ -50,8 +51,21 @@ const WorkTimeLogger: React.FC = () => {
   };
 
   const startTask = (taskName: string) => {
+    if (!predefinedTasks.includes(taskName)) {
+      console.error(`Invalid task name: ${taskName}`);
+      return;
+    }
+
+    if (currentTask) {
+      setTasks((prev) =>
+        prev.map((task) =>
+          task.id === currentTask.id ? { ...task, endTime: Date.now() } : task
+        )
+      );
+    }
+
     const newTask = taskService.createTask(taskName);
-    setTasks((prev) => [...taskService.endAllTasks(prev), newTask]);
+    setTasks((prev) => [...prev, newTask]);
     setCurrentTask(newTask);
   };
 

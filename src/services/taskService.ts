@@ -1,4 +1,5 @@
 import { Task, TaskStatistics } from "../types";
+import { predefinedTasks } from "../utils/utils";
 
 export const taskService = {
   calculateTaskStatistics(tasks: Task[]): TaskStatistics {
@@ -12,6 +13,10 @@ export const taskService = {
   },
 
   createTask(name: string): Task {
+    if (!predefinedTasks.includes(name)) {
+      throw new Error(`Invalid task name: ${name}`);
+    }
+
     const now = Date.now();
     return {
       id: now.toString(),
